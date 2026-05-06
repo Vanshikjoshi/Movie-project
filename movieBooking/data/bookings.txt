@@ -1,0 +1,2 @@
+Movie: Inspection | Seats: 2 | User: Vanshika Joshi
+Movie: Harry  | Seats: 3 | User: Shika 
