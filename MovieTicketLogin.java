@@ -5,22 +5,18 @@ public class MovieTicketLogin extends Frame implements ActionListener {
 
     // Login Components
     Label loginTitle, emailPhoneLabel, loginPasswordLabel;
-
     TextField emailPhoneField, loginPasswordField;
-
     Button loginButton, signupButton;
 
     // Signup Components
     Label signupTitle, signupUsernameLabel, signupPasswordLabel;
-
     TextField signupUsernameField, signupPasswordField;
-
     Button createAccountButton;
 
     MovieTicketLogin() {
 
         setTitle("Movie Ticket Booking System");
-        setSize(500, 450);
+        setSize(500, 500);
         setLayout(null);
         setBackground(Color.LIGHT_GRAY);
 
@@ -69,9 +65,9 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         signupPasswordField.setBounds(200, 370, 180, 30);
 
         createAccountButton = new Button("Create Account");
-        createAccountButton.setBounds(180, 410, 120, 30);
+        createAccountButton.setBounds(180, 420, 120, 30);
 
-        // Action Listeners
+        // Add listeners
         loginButton.addActionListener(this);
         signupButton.addActionListener(this);
         createAccountButton.addActionListener(this);
@@ -92,7 +88,7 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         add(signupPasswordField);
         add(createAccountButton);
 
-        // Window Closing
+        // Close Window
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
@@ -102,34 +98,34 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         setVisible(true);
     }
 
-    @Override
+    // Button Actions
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == loginButton) {
 
-            String emailOrPhone = emailPhoneField.getText();
-            String password = loginPasswordField.getText();
+            System.out.println("Login Successful");
 
-            System.out.println("Login Attempt");
-            System.out.println("Email/Phone: " + emailOrPhone);
-            System.out.println("Password: " + password);
+            // Open Preference Page
+            new MoviePreferencePage();
 
-        }
-
-        else if (e.getSource() == signupButton) {
-
-            System.out.println("Redirecting to Signup Section...");
-
+            // Close Login Window
+            dispose();
         }
 
         else if (e.getSource() == createAccountButton) {
 
-            String username = signupUsernameField.getText();
-            String password = signupPasswordField.getText();
+            System.out.println("Account Created Successfully");
 
-            System.out.println("Account Created!");
-            System.out.println("Username: " + username);
-            System.out.println("Password: " + password);
+            // Open Preference Page
+            new MoviePreferencePage();
+
+            // Close Login Window
+            dispose();
+        }
+
+        else if (e.getSource() == signupButton) {
+
+            System.out.println("Signup Section");
 
         }
     }
@@ -137,6 +133,96 @@ public class MovieTicketLogin extends Frame implements ActionListener {
     public static void main(String[] args) {
 
         new MovieTicketLogin();
+
+    }
+}
+
+// ---------- SECOND SCREEN ----------
+
+class MoviePreferencePage extends Frame implements ActionListener {
+
+    Label titleLabel, genreLabel, languageLabel;
+
+    Checkbox action, comedy, horror, sciFi;
+    Checkbox hindi, english, punjabi;
+
+    Button saveButton;
+
+    MoviePreferencePage() {
+
+        setTitle("Movie Preferences");
+        setSize(500, 400);
+        setLayout(null);
+        setBackground(Color.WHITE);
+
+        titleLabel = new Label("Select Your Movie Preferences");
+        titleLabel.setBounds(130, 50, 250, 30);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+
+        // Genre
+        genreLabel = new Label("Favorite Genre:");
+        genreLabel.setBounds(50, 110, 120, 30);
+
+        action = new Checkbox("Action");
+        action.setBounds(200, 110, 100, 30);
+
+        comedy = new Checkbox("Comedy");
+        comedy.setBounds(300, 110, 100, 30);
+
+        horror = new Checkbox("Horror");
+        horror.setBounds(200, 150, 100, 30);
+
+        sciFi = new Checkbox("Sci-Fi");
+        sciFi.setBounds(300, 150, 100, 30);
+
+        // Language
+        languageLabel = new Label("Preferred Language:");
+        languageLabel.setBounds(50, 220, 140, 30);
+
+        hindi = new Checkbox("Hindi");
+        hindi.setBounds(220, 220, 80, 30);
+
+        english = new Checkbox("English");
+        english.setBounds(300, 220, 80, 30);
+
+        punjabi = new Checkbox("Punjabi");
+        punjabi.setBounds(390, 220, 80, 30);
+
+        // Save Button
+        saveButton = new Button("Save Preferences");
+        saveButton.setBounds(170, 300, 150, 40);
+
+        saveButton.addActionListener(this);
+
+        // Add Components
+        add(titleLabel);
+
+        add(genreLabel);
+        add(action);
+        add(comedy);
+        add(horror);
+        add(sciFi);
+
+        add(languageLabel);
+        add(hindi);
+        add(english);
+        add(punjabi);
+
+        add(saveButton);
+
+        // Close Window
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                dispose();
+            }
+        });
+
+        setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+
+        System.out.println("Preferences Saved Successfully!");
 
     }
 }
