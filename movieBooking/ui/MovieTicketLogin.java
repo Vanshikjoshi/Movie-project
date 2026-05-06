@@ -3,19 +3,20 @@ package movieBooking.ui;
 import java.awt.*;
 import java.awt.event.*;
 
-import movieBooking.ui.MainFrame;
-
 public class MovieTicketLogin extends Frame implements ActionListener {
 
-    // Login Components
+    // Login components
     Label loginTitle, emailPhoneLabel, loginPasswordLabel;
     TextField emailPhoneField, loginPasswordField;
     Button loginButton, signupButton;
 
-    // Signup Components
+    // Signup components
     Label signupTitle, signupUsernameLabel, signupPasswordLabel;
     TextField signupUsernameField, signupPasswordField;
     Button createAccountButton;
+
+    private String savedUser = null;
+    private String savedPass = null;
 
     public MovieTicketLogin() {
 
@@ -24,8 +25,7 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         setLayout(null);
         setBackground(Color.LIGHT_GRAY);
 
-        // ---------- LOGIN SECTION ----------
-
+        // ---------------- LOGIN ----------------
         loginTitle = new Label("LOGIN");
         loginTitle.setBounds(220, 50, 100, 30);
         loginTitle.setFont(new Font("Arial", Font.BOLD, 18));
@@ -47,10 +47,9 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         loginButton.setBounds(150, 210, 80, 35);
 
         signupButton = new Button("Go to Signup");
-        signupButton.setBounds(250, 210, 100, 35);
+        signupButton.setBounds(250, 210, 120, 35);
 
-        // ---------- SIGNUP SECTION ----------
-
+        // ---------------- SIGNUP ----------------
         signupTitle = new Label("SIGN UP");
         signupTitle.setBounds(210, 280, 100, 30);
         signupTitle.setFont(new Font("Arial", Font.BOLD, 18));
@@ -69,14 +68,14 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         signupPasswordField.setBounds(200, 370, 180, 30);
 
         createAccountButton = new Button("Create Account");
-        createAccountButton.setBounds(180, 420, 120, 30);
+        createAccountButton.setBounds(180, 420, 140, 30);
 
-        // Add listeners
+        // listeners
         loginButton.addActionListener(this);
         signupButton.addActionListener(this);
         createAccountButton.addActionListener(this);
 
-        // Add Components
+        // add components
         add(loginTitle);
         add(emailPhoneLabel);
         add(emailPhoneField);
@@ -92,7 +91,7 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         add(signupPasswordField);
         add(createAccountButton);
 
-        // Close Window
+        // window close
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
@@ -102,15 +101,32 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         setVisible(true);
     }
 
-    // Button Actions
+    @Override
     public void actionPerformed(ActionEvent e) {
 
+        // ---------------- LOGIN ----------------
         if (e.getSource() == loginButton) {
-            System.out.println("Login Successful");
-            new MainFrame(); // go to booking system
-            dispose();
+
+            String user = emailPhoneField.getText();
+            String pass = loginPasswordField.getText();
+
+            if (savedUser == null || savedPass == null) {
+                System.out.println("No account exists. Please sign up first.");
+                return;
+            }
+
+            if (user.equals(savedUser) && pass.equals(savedPass)) {
+                System.out.println("Login Successful");
+
+                new MainFrame(); // go to booking system
+                dispose();
+
+            } else {
+                System.out.println("Invalid credentials");
+            }
         }
 
+        // ---------------- SIGNUP ----------------
         else if (e.getSource() == createAccountButton) {
 
             String username = signupUsernameField.getText();
@@ -121,17 +137,19 @@ public class MovieTicketLogin extends Frame implements ActionListener {
                 return;
             }
 
+            savedUser = username;
+            savedPass = password;
+
             System.out.println("Account Created Successfully!");
 
-            // Clear signup fields
+            // clear fields
             signupUsernameField.setText("");
             signupPasswordField.setText("");
-
-            // Stay on same page (simulate going back to login)
         }
 
+        // ---------------- TOGGLE MESSAGE ONLY ----------------
         else if (e.getSource() == signupButton) {
-            System.out.println("Signup Section");
+            System.out.println("Signup section already visible below login.");
         }
     }
 }
