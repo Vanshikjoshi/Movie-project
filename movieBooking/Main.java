@@ -1,8 +1,8 @@
 package movieBooking;
-import movieBooking.ui.MainFrame;
+import movieBooking.ui.MovieTicketLogin;
 
-public class Main{
+public class Main {
     public static void main(String[] args) {
-        new MainFrame(); 
+        new MovieTicketLogin();
     }
 }
