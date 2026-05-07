@@ -112,17 +112,23 @@ public class MovieTicketLogin extends Frame implements ActionListener {
 
             if (savedUser == null || savedPass == null) {
                 System.out.println("No account exists. Please sign up first.");
+                emailPhoneField.setText("");
+                loginPasswordField.setText("");
                 return;
             }
 
-            if (user.equals(savedUser) && pass.equals(savedPass)) {
+            if (pass.equals(savedPass)) {
                 System.out.println("Login Successful");
+                emailPhoneField.setText("");
+                loginPasswordField.setText("");
 
-                new MainFrame(); // go to booking system
+                new MainFrame();
                 dispose();
 
             } else {
                 System.out.println("Invalid credentials");
+                emailPhoneField.setText("");
+                loginPasswordField.setText("");
             }
         }
 

@@ -4,7 +4,7 @@ public class Payment {
 
     private String paymentMethod; 
     private int seats;
-    private double pricePerSeat = 150; 
+    private double pricePerSeat = 250; 
 
     public Payment(String paymentMethod, int seats) {
         this.paymentMethod = paymentMethod;
@@ -20,7 +20,7 @@ public class Payment {
         return paymentMethod;
     }
 
-    // method overriding example (optional use)
+
     public String toString() {
         return "Payment Method: " + paymentMethod +
                " | Total Bill: ₹" + calculateTotal();
