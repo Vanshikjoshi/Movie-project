@@ -1,1 +1,4 @@
 Movie: Inspection | Seats: 2 | User: Vanshika Joshi
+Movie: haq | Seats: 3 | User: sunita
+Movie: haq | Seats: 2 | User: prakhar
+Movie: haq | Seats: 1 | User: kums

@@ -1,4 +1,4 @@
-package movieBooking;
+gitpackage movieBooking;
 import movieBooking.ui.MovieTicketLogin;
 
 public class Main {
