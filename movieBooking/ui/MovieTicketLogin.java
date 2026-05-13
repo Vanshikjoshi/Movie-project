@@ -2,18 +2,15 @@ package movieBooking.ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.*;
 
-// ---------------- LOGIN PAGE ----------------
+// LOGIN PAGE
 
 public class MovieTicketLogin extends Frame implements ActionListener {
 
     Label title, userLabel, passLabel, signupMsg, message;
     TextField userField, passField;
     Button loginButton, signupButton;
-
-    // Shared account details
-    static String savedUser = "";
-    static String savedPass = "";
 
     public MovieTicketLogin() {
 
@@ -104,17 +101,35 @@ public class MovieTicketLogin extends Frame implements ActionListener {
             String user = userField.getText();
             String pass = passField.getText();
 
-            if (user.equals(savedUser) && pass.equals(savedPass)
-                    && !savedUser.equals("")) {
+            try {
 
-                message.setText("Login Successful!");
+                Connection con = DBConnection.getConnection();
 
-                new MainFrame();
-                dispose();
+                String query = "SELECT * FROM users WHERE username=? AND user_password=?";
 
-            } else {
+                PreparedStatement pst = con.prepareStatement(query);
 
-                message.setText("Login Failed!");
+                pst.setString(1, user);
+                pst.setString(2, pass);
+
+                ResultSet rs = pst.executeQuery();
+
+                if (rs.next()) {
+
+                    message.setText("Login Successful!");
+
+                    new MainFrame();
+                    dispose();
+
+                } else {
+
+                    message.setText("Invalid Username or Password!");
+                }
+
+            } catch (Exception ex) {
+
+                message.setText("Database Error!");
+                System.out.println(ex);
             }
         }
 
@@ -127,6 +142,7 @@ public class MovieTicketLogin extends Frame implements ActionListener {
     }
 
     public static void main(String[] args) {
+
         new MovieTicketLogin();
     }
 }
@@ -216,7 +232,7 @@ class SignupPage extends Frame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
 
-        // Create Account
+        // CREATE ACCOUNT
         if (e.getSource() == createButton) {
 
             String username = userField.getText();
@@ -229,16 +245,41 @@ class SignupPage extends Frame implements ActionListener {
 
             else {
 
-                MovieTicketLogin.savedUser = username;
-                MovieTicketLogin.savedPass = password;
+                try {
 
-                message.setText("Account Created!");
-                new MainFrame();
-                dispose();
+                    Connection con = DBConnection.getConnection();
+
+                    String query = "INSERT INTO users(username, user_password) VALUES(?, ?)";
+
+                    PreparedStatement pst = con.prepareStatement(query);
+
+                    pst.setString(1, username);
+                    pst.setString(2, password);
+
+                    int rows = pst.executeUpdate();
+
+                    if (rows > 0) {
+
+                        message.setText("Account Created!");
+
+                        new MainFrame();
+                        dispose();
+                    }
+
+                } 
+                catch (SQLIntegrityConstraintViolationException ex){
+                    message.setText("Username alreay exists!");
+                }
+                catch (Exception ex) {
+
+                    message.setText("Error Creating Account!");
+                    ex.printStackTrace();
+                } 
+
             }
         }
 
-        // Back to Login Page
+        // BACK BUTTON
         if (e.getSource() == backButton) {
 
             new MovieTicketLogin();
