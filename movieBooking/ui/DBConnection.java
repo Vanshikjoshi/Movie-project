@@ -11,12 +11,14 @@ public class DBConnection {
         try {
 
             
-
+            Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/moviebooking",
                     "root",
                     "subhi@09"
             );
+
+            System.out.println("Connected Successfully");
 
         } catch (Exception e) {
 
