@@ -8,3 +8,5 @@ Movie: yjgkuhl | Seats: 2 | User: fdhtfjyg
 Movie: gbnkndbjk | Seats: 4 | User: vanshika
 Movie: vbfgfg | Seats: 3 | User: gfngh 
 >>>>>>> 2d5ae73f7075b59396d6f0d961f657488f4b33d3
+Movie: haq | Seats: 2 | User: vanshika
+Movie: gh | Seats: 1 | User: 1

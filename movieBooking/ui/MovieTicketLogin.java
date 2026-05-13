@@ -3,95 +3,90 @@ package movieBooking.ui;
 import java.awt.*;
 import java.awt.event.*;
 
+// ---------------- LOGIN PAGE ----------------
+
 public class MovieTicketLogin extends Frame implements ActionListener {
 
-    // Login components
-    Label loginTitle, emailPhoneLabel, loginPasswordLabel;
-    TextField emailPhoneField, loginPasswordField;
+    Label title, userLabel, passLabel, signupMsg, message;
+    TextField userField, passField;
     Button loginButton, signupButton;
 
-    // Signup components
-    Label signupTitle, signupUsernameLabel, signupPasswordLabel;
-    TextField signupUsernameField, signupPasswordField;
-    Button createAccountButton;
-
-    private String savedUser = null;
-    private String savedPass = null;
+    // Shared account details
+    static String savedUser = "";
+    static String savedPass = "";
 
     public MovieTicketLogin() {
 
-        setTitle("Movie Ticket Booking System");
-        setSize(500, 500);
+        setTitle("Login Page");
+        setSize(450, 400);
         setLayout(null);
-        setBackground(Color.LIGHT_GRAY);
 
-        // ---------------- LOGIN ----------------
-        loginTitle = new Label("LOGIN");
-        loginTitle.setBounds(220, 50, 100, 30);
-        loginTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        // Background Color
+        setBackground(new Color(20, 40, 90));
 
-        emailPhoneLabel = new Label("Email / Phone:");
-        emailPhoneLabel.setBounds(70, 100, 120, 30);
+        // Title
+        title = new Label("LOGIN");
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setForeground(Color.WHITE);
+        title.setBounds(170, 50, 150, 40);
+        add(title);
 
-        emailPhoneField = new TextField();
-        emailPhoneField.setBounds(200, 100, 180, 30);
+        // Username
+        userLabel = new Label("Username:");
+        userLabel.setForeground(Color.WHITE);
+        userLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        userLabel.setBounds(70, 120, 100, 30);
+        add(userLabel);
 
-        loginPasswordLabel = new Label("Password:");
-        loginPasswordLabel.setBounds(70, 150, 120, 30);
+        userField = new TextField();
+        userField.setBounds(180, 120, 180, 35);
+        userField.setBackground(new Color(230, 240, 255));
+        add(userField);
 
-        loginPasswordField = new TextField();
-        loginPasswordField.setEchoChar('*');
-        loginPasswordField.setBounds(200, 150, 180, 30);
+        // Password
+        passLabel = new Label("Password:");
+        passLabel.setForeground(Color.WHITE);
+        passLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        passLabel.setBounds(70, 180, 100, 30);
+        add(passLabel);
 
+        passField = new TextField();
+        passField.setEchoChar('*');
+        passField.setBounds(180, 180, 180, 35);
+        passField.setBackground(new Color(230, 240, 255));
+        add(passField);
+
+        // Login Button
         loginButton = new Button("Login");
-        loginButton.setBounds(150, 210, 80, 35);
-
-        signupButton = new Button("Go to Signup");
-        signupButton.setBounds(250, 210, 120, 35);
-
-        // ---------------- SIGNUP ----------------
-        signupTitle = new Label("SIGN UP");
-        signupTitle.setBounds(210, 280, 100, 30);
-        signupTitle.setFont(new Font("Arial", Font.BOLD, 18));
-
-        signupUsernameLabel = new Label("Username:");
-        signupUsernameLabel.setBounds(70, 330, 120, 30);
-
-        signupUsernameField = new TextField();
-        signupUsernameField.setBounds(200, 330, 180, 30);
-
-        signupPasswordLabel = new Label("Password:");
-        signupPasswordLabel.setBounds(70, 370, 120, 30);
-
-        signupPasswordField = new TextField();
-        signupPasswordField.setEchoChar('*');
-        signupPasswordField.setBounds(200, 370, 180, 30);
-
-        createAccountButton = new Button("Create Account");
-        createAccountButton.setBounds(180, 420, 140, 30);
-
-        // listeners
+        loginButton.setBounds(170, 250, 110, 40);
+        loginButton.setBackground(new Color(0, 120, 255));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFont(new Font("Arial", Font.BOLD, 14));
         loginButton.addActionListener(this);
-        signupButton.addActionListener(this);
-        createAccountButton.addActionListener(this);
-
-        // add components
-        add(loginTitle);
-        add(emailPhoneLabel);
-        add(emailPhoneField);
-        add(loginPasswordLabel);
-        add(loginPasswordField);
         add(loginButton);
+
+        // Bottom Message
+        signupMsg = new Label("Don't have an account?");
+        signupMsg.setForeground(Color.WHITE);
+        signupMsg.setBounds(110, 320, 150, 30);
+        add(signupMsg);
+
+        // Signup Button
+        signupButton = new Button("Sign Up");
+        signupButton.setBounds(260, 320, 90, 30);
+        signupButton.setBackground(new Color(0, 150, 255));
+        signupButton.setForeground(Color.WHITE);
+        signupButton.addActionListener(this);
         add(signupButton);
 
-        add(signupTitle);
-        add(signupUsernameLabel);
-        add(signupUsernameField);
-        add(signupPasswordLabel);
-        add(signupPasswordField);
-        add(createAccountButton);
+        // Message Label
+        message = new Label("");
+        message.setForeground(Color.YELLOW);
+        message.setFont(new Font("Arial", Font.BOLD, 13));
+        message.setBounds(140, 290, 200, 20);
+        add(message);
 
-        // window close
+        // Close window
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
@@ -101,61 +96,153 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         setVisible(true);
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
 
-        // ---------------- LOGIN ----------------
+        // LOGIN
         if (e.getSource() == loginButton) {
 
-            String user = emailPhoneField.getText();
-            String pass = loginPasswordField.getText();
+            String user = userField.getText();
+            String pass = passField.getText();
 
-            if (savedUser == null || savedPass == null) {
-                System.out.println("No account exists. Please sign up first.");
-                emailPhoneField.setText("");
-                loginPasswordField.setText("");
-                return;
-            }
+            if (user.equals(savedUser) && pass.equals(savedPass)
+                    && !savedUser.equals("")) {
 
-            if (pass.equals(savedPass)) {
-                System.out.println("Login Successful");
-                emailPhoneField.setText("");
-                loginPasswordField.setText("");
+                message.setText("Login Successful!");
 
                 new MainFrame();
                 dispose();
 
             } else {
-                System.out.println("Invalid credentials");
-                emailPhoneField.setText("");
-                loginPasswordField.setText("");
+
+                message.setText("Login Failed!");
             }
         }
 
-        // ---------------- SIGNUP ----------------
-        else if (e.getSource() == createAccountButton) {
+        // OPEN SIGNUP PAGE
+        if (e.getSource() == signupButton) {
 
-            String username = signupUsernameField.getText();
-            String password = signupPasswordField.getText();
+            new SignupPage();
+            dispose();
+        }
+    }
 
-            if (username.isEmpty() || password.isEmpty()) {
-                System.out.println("Fields cannot be empty!");
-                return;
+    public static void main(String[] args) {
+        new MovieTicketLogin();
+    }
+}
+
+// ---------------- SIGNUP PAGE ----------------
+
+class SignupPage extends Frame implements ActionListener {
+
+    Label title, userLabel, passLabel, message;
+    TextField userField, passField;
+    Button createButton, backButton;
+
+    SignupPage() {
+
+        setTitle("Signup Page");
+        setSize(450, 400);
+        setLayout(null);
+
+        // Background Color
+        setBackground(new Color(10, 60, 120));
+
+        // Title
+        title = new Label("SIGN UP");
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setForeground(Color.WHITE);
+        title.setBounds(160, 50, 150, 40);
+        add(title);
+
+        // Username
+        userLabel = new Label("Username:");
+        userLabel.setForeground(Color.WHITE);
+        userLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        userLabel.setBounds(70, 120, 100, 30);
+        add(userLabel);
+
+        userField = new TextField();
+        userField.setBounds(180, 120, 180, 35);
+        userField.setBackground(new Color(230, 240, 255));
+        add(userField);
+
+        // Password
+        passLabel = new Label("Password:");
+        passLabel.setForeground(Color.WHITE);
+        passLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        passLabel.setBounds(70, 180, 100, 30);
+        add(passLabel);
+
+        passField = new TextField();
+        passField.setEchoChar('*');
+        passField.setBounds(180, 180, 180, 35);
+        passField.setBackground(new Color(230, 240, 255));
+        add(passField);
+
+        // Create Account Button
+        createButton = new Button("Create Account");
+        createButton.setBounds(120, 250, 130, 40);
+        createButton.setBackground(new Color(0, 120, 255));
+        createButton.setForeground(Color.WHITE);
+        createButton.setFont(new Font("Arial", Font.BOLD, 13));
+        createButton.addActionListener(this);
+        add(createButton);
+
+        // Back Button
+        backButton = new Button("Back");
+        backButton.setBounds(270, 250, 80, 40);
+        backButton.setBackground(new Color(80, 80, 80));
+        backButton.setForeground(Color.WHITE);
+        backButton.addActionListener(this);
+        add(backButton);
+
+        // Message
+        message = new Label("");
+        message.setForeground(Color.YELLOW);
+        message.setFont(new Font("Arial", Font.BOLD, 13));
+        message.setBounds(110, 310, 250, 30);
+        add(message);
+
+        // Close window
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                dispose();
+            }
+        });
+
+        setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+
+        // Create Account
+        if (e.getSource() == createButton) {
+
+            String username = userField.getText();
+            String password = passField.getText();
+
+            if (username.equals("") || password.equals("")) {
+
+                message.setText("Fields Cannot Be Empty!");
             }
 
-            savedUser = username;
-            savedPass = password;
+            else {
 
-            System.out.println("Account Created Successfully!");
+                MovieTicketLogin.savedUser = username;
+                MovieTicketLogin.savedPass = password;
 
-            // clear fields
-            signupUsernameField.setText("");
-            signupPasswordField.setText("");
+                message.setText("Account Created!");
+                new MainFrame();
+                dispose();
+            }
         }
 
-        // ---------------- TOGGLE MESSAGE ONLY ----------------
-        else if (e.getSource() == signupButton) {
-            System.out.println("Signup section already visible below login.");
+        // Back to Login Page
+        if (e.getSource() == backButton) {
+
+            new MovieTicketLogin();
+            dispose();
         }
     }
 }
