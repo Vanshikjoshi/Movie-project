@@ -4,12 +4,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-// LOGIN PAGE
-
 public class MovieTicketLogin extends Frame implements ActionListener {
 
     Label title, userLabel, passLabel, signupMsg, message;
+
     TextField userField, passField;
+
     Button loginButton, signupButton;
 
     public MovieTicketLogin() {
@@ -18,20 +18,21 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         setSize(450, 400);
         setLayout(null);
 
-        // Background Color
         setBackground(new Color(20, 40, 90));
 
-        // Title
+        // TITLE
+
         title = new Label("LOGIN");
         title.setFont(new Font("Arial", Font.BOLD, 28));
         title.setForeground(Color.WHITE);
         title.setBounds(170, 50, 150, 40);
         add(title);
 
-        // Username
+        // USERNAME
+
         userLabel = new Label("Username:");
-        userLabel.setForeground(Color.WHITE);
         userLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        userLabel.setForeground(Color.WHITE);
         userLabel.setBounds(70, 120, 100, 30);
         add(userLabel);
 
@@ -40,10 +41,11 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         userField.setBackground(new Color(230, 240, 255));
         add(userField);
 
-        // Password
+        // PASSWORD
+
         passLabel = new Label("Password:");
-        passLabel.setForeground(Color.WHITE);
         passLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        passLabel.setForeground(Color.WHITE);
         passLabel.setBounds(70, 180, 100, 30);
         add(passLabel);
 
@@ -53,7 +55,8 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         passField.setBackground(new Color(230, 240, 255));
         add(passField);
 
-        // Login Button
+        // LOGIN BUTTON
+
         loginButton = new Button("Login");
         loginButton.setBounds(170, 250, 110, 40);
         loginButton.setBackground(new Color(0, 120, 255));
@@ -62,13 +65,15 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         loginButton.addActionListener(this);
         add(loginButton);
 
-        // Bottom Message
+        // SIGNUP MESSAGE
+
         signupMsg = new Label("Don't have an account?");
         signupMsg.setForeground(Color.WHITE);
         signupMsg.setBounds(110, 320, 150, 30);
         add(signupMsg);
 
-        // Signup Button
+        // SIGNUP BUTTON
+
         signupButton = new Button("Sign Up");
         signupButton.setBounds(260, 320, 90, 30);
         signupButton.setBackground(new Color(0, 150, 255));
@@ -76,16 +81,20 @@ public class MovieTicketLogin extends Frame implements ActionListener {
         signupButton.addActionListener(this);
         add(signupButton);
 
-        // Message Label
+        // MESSAGE LABEL
+
         message = new Label("");
         message.setForeground(Color.YELLOW);
         message.setFont(new Font("Arial", Font.BOLD, 13));
-        message.setBounds(140, 290, 200, 20);
+        message.setBounds(120, 290, 250, 20);
         add(message);
 
-        // Close window
+        // CLOSE WINDOW
+
         addWindowListener(new WindowAdapter() {
+
             public void windowClosing(WindowEvent we) {
+
                 dispose();
             }
         });
@@ -96,29 +105,47 @@ public class MovieTicketLogin extends Frame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         // LOGIN
+
         if (e.getSource() == loginButton) {
 
-            String user = userField.getText();
-            String pass = passField.getText();
+            String user = userField.getText().trim();
+            String pass = passField.getText().trim();
+
+            if (user.equals("") || pass.equals("")) {
+
+                message.setText("Fields Cannot Be Empty!");
+                return;
+            }
+
+            Connection con = null;
+            PreparedStatement pst = null;
+            ResultSet rs = null;
 
             try {
 
-                Connection con = DBConnection.getConnection();
+                con = DBConnection.getConnection();
+
+                if (con == null) {
+
+                    message.setText("Database Connection Failed!");
+                    return;
+                }
 
                 String query = "SELECT * FROM users WHERE username=? AND user_password=?";
 
-                PreparedStatement pst = con.prepareStatement(query);
+                pst = con.prepareStatement(query);
 
                 pst.setString(1, user);
                 pst.setString(2, pass);
 
-                ResultSet rs = pst.executeQuery();
+                rs = pst.executeQuery();
 
                 if (rs.next()) {
 
                     message.setText("Login Successful!");
 
                     new MainFrame();
+
                     dispose();
 
                 } else {
@@ -129,14 +156,34 @@ public class MovieTicketLogin extends Frame implements ActionListener {
             } catch (Exception ex) {
 
                 message.setText("Database Error!");
-                System.out.println(ex);
+                ex.printStackTrace();
+
+            } finally {
+
+                try {
+
+                    if (rs != null)
+                        rs.close();
+
+                    if (pst != null)
+                        pst.close();
+
+                    if (con != null)
+                        con.close();
+
+                } catch (Exception ex) {
+
+                    ex.printStackTrace();
+                }
             }
         }
 
         // OPEN SIGNUP PAGE
+
         if (e.getSource() == signupButton) {
 
             new SignupPage();
+
             dispose();
         }
     }
@@ -147,12 +194,14 @@ public class MovieTicketLogin extends Frame implements ActionListener {
     }
 }
 
-// ---------------- SIGNUP PAGE ----------------
+// ================= SIGNUP PAGE =================
 
 class SignupPage extends Frame implements ActionListener {
 
     Label title, userLabel, passLabel, message;
+
     TextField userField, passField;
+
     Button createButton, backButton;
 
     SignupPage() {
@@ -161,17 +210,18 @@ class SignupPage extends Frame implements ActionListener {
         setSize(450, 400);
         setLayout(null);
 
-        // Background Color
         setBackground(new Color(10, 60, 120));
 
-        // Title
+        // TITLE
+
         title = new Label("SIGN UP");
         title.setFont(new Font("Arial", Font.BOLD, 28));
         title.setForeground(Color.WHITE);
         title.setBounds(160, 50, 150, 40);
         add(title);
 
-        // Username
+        // USERNAME
+
         userLabel = new Label("Username:");
         userLabel.setForeground(Color.WHITE);
         userLabel.setFont(new Font("Arial", Font.BOLD, 14));
@@ -183,7 +233,8 @@ class SignupPage extends Frame implements ActionListener {
         userField.setBackground(new Color(230, 240, 255));
         add(userField);
 
-        // Password
+        // PASSWORD
+
         passLabel = new Label("Password:");
         passLabel.setForeground(Color.WHITE);
         passLabel.setFont(new Font("Arial", Font.BOLD, 14));
@@ -196,7 +247,8 @@ class SignupPage extends Frame implements ActionListener {
         passField.setBackground(new Color(230, 240, 255));
         add(passField);
 
-        // Create Account Button
+        // CREATE BUTTON
+
         createButton = new Button("Create Account");
         createButton.setBounds(120, 250, 130, 40);
         createButton.setBackground(new Color(0, 120, 255));
@@ -205,7 +257,8 @@ class SignupPage extends Frame implements ActionListener {
         createButton.addActionListener(this);
         add(createButton);
 
-        // Back Button
+        // BACK BUTTON
+
         backButton = new Button("Back");
         backButton.setBounds(270, 250, 80, 40);
         backButton.setBackground(new Color(80, 80, 80));
@@ -213,16 +266,20 @@ class SignupPage extends Frame implements ActionListener {
         backButton.addActionListener(this);
         add(backButton);
 
-        // Message
+        // MESSAGE
+
         message = new Label("");
         message.setForeground(Color.YELLOW);
         message.setFont(new Font("Arial", Font.BOLD, 13));
-        message.setBounds(110, 310, 250, 30);
+        message.setBounds(100, 310, 250, 30);
         add(message);
 
-        // Close window
+        // CLOSE WINDOW
+
         addWindowListener(new WindowAdapter() {
+
             public void windowClosing(WindowEvent we) {
+
                 dispose();
             }
         });
@@ -233,56 +290,83 @@ class SignupPage extends Frame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         // CREATE ACCOUNT
+
         if (e.getSource() == createButton) {
 
-            String username = userField.getText();
-            String password = passField.getText();
+            String username = userField.getText().trim();
+            String password = passField.getText().trim();
 
             if (username.equals("") || password.equals("")) {
 
                 message.setText("Fields Cannot Be Empty!");
+
+                return;
             }
 
-            else {
+            Connection con = null;
+            PreparedStatement pst = null;
+
+            try {
+
+                con = DBConnection.getConnection();
+
+                if (con == null) {
+
+                    message.setText("Database Connection Failed!");
+                    return;
+                }
+
+                String query = "INSERT INTO users(username, user_password) VALUES(?, ?)";
+
+                pst = con.prepareStatement(query);
+
+                pst.setString(1, username);
+                pst.setString(2, password);
+
+                int rows = pst.executeUpdate();
+
+                if (rows > 0) {
+
+                    message.setText("Account Created!");
+
+                    new MainFrame();
+
+                    dispose();
+                }
+
+            } catch (SQLIntegrityConstraintViolationException ex) {
+
+                message.setText("Username Already Exists!");
+
+            } catch (Exception ex) {
+
+                message.setText("Error Creating Account!");
+
+                ex.printStackTrace();
+
+            } finally {
 
                 try {
 
-                    Connection con = DBConnection.getConnection();
+                    if (pst != null)
+                        pst.close();
 
-                    String query = "INSERT INTO users(username, user_password) VALUES(?, ?)";
+                    if (con != null)
+                        con.close();
 
-                    PreparedStatement pst = con.prepareStatement(query);
+                } catch (Exception ex) {
 
-                    pst.setString(1, username);
-                    pst.setString(2, password);
-
-                    int rows = pst.executeUpdate();
-
-                    if (rows > 0) {
-
-                        message.setText("Account Created!");
-
-                        new MainFrame();
-                        dispose();
-                    }
-
-                } 
-                catch (SQLIntegrityConstraintViolationException ex){
-                    message.setText("Username alreay exists!");
-                }
-                catch (Exception ex) {
-
-                    message.setText("Error Creating Account!");
                     ex.printStackTrace();
-                } 
-
+                }
             }
         }
 
         // BACK BUTTON
+
         if (e.getSource() == backButton) {
 
             new MovieTicketLogin();
+
             dispose();
         }
     }
