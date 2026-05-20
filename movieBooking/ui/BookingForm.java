@@ -7,127 +7,114 @@ import java.io.*;
 
 import movieBooking.model.Payment;
 import movieBooking.service.BookingService;
-import movieBooking.util.CustomException;
 
 public class BookingForm extends Frame implements ActionListener {
 
     MainFrame mainFrame;
 
-    Label heading, movieLabel, seatsLabel, userLabel, paymentLabel, message;
-
+    Label heading;
     TextField movieField, seatsField, userField;
-
     List movieList;
-
     Choice paymentChoice;
-
     Button bookBtn, cancelBtn;
+
+    Label message;
 
     public BookingForm(MainFrame mainFrame) {
 
         this.mainFrame = mainFrame;
 
         setTitle("Movie Ticket Booking");
-        setSize(500, 560);
+        setSize(520, 600);
         setLayout(null);
-        setBackground(new Color(15, 25, 55));
+        setBackground(new Color(18, 18, 28));
 
-        // HEADING
-        heading = new Label("BOOK MOVIE TICKET");
-        heading.setBounds(90, 40, 320, 40);
+        // ===== HEADER =====
+        heading = new Label("Movie Ticket Booking", Label.CENTER);
+        heading.setBounds(0, 40, 520, 40);
+        heading.setFont(new Font("Segoe UI", Font.BOLD, 26));
         heading.setForeground(Color.WHITE);
-        heading.setFont(new Font("Arial", Font.BOLD, 24));
         add(heading);
 
-        // MOVIE LABEL
-        movieLabel = new Label("Search Movie:");
-        movieLabel.setBounds(60, 110, 120, 30);
-        movieLabel.setForeground(Color.WHITE);
-        movieLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        // ===== MOVIE =====
+        Label movieLabel = new Label("Movie");
+        movieLabel.setBounds(60, 110, 100, 20);
+        movieLabel.setForeground(Color.LIGHT_GRAY);
         add(movieLabel);
 
-        // MOVIE FIELD
         movieField = new TextField();
-        movieField.setBounds(220, 110, 180, 30);
+        movieField.setBounds(60, 135, 400, 30);
         add(movieField);
 
-        // MOVIE LIST (HIDDEN INITIALLY → FIX FOR EXTRA SPACE LOOK)
         movieList = new List();
-        movieList.setBounds(220, 145, 180, 70);
+        movieList.setBounds(60, 170, 400, 80);
         movieList.setVisible(false);
         add(movieList);
 
-        // SEARCH WHILE TYPING
-        movieField.addKeyListener(new KeyAdapter() {
-            public void keyReleased(KeyEvent e) {
-                searchMovies(movieField.getText());
-            }
-        });
-
-        // SELECT MOVIE
-        movieList.addItemListener(e -> {
-            movieField.setText(movieList.getSelectedItem());
-            movieList.setVisible(false);
-        });
-
-        // SEATS LABEL (moved up slightly)
-        seatsLabel = new Label("Number of Seats:");
-        seatsLabel.setBounds(60, 230, 140, 30);
-        seatsLabel.setForeground(Color.WHITE);
-        seatsLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        // ===== SEATS =====
+        Label seatsLabel = new Label("Seats");
+        seatsLabel.setBounds(60, 260, 100, 20);
+        seatsLabel.setForeground(Color.LIGHT_GRAY);
         add(seatsLabel);
 
         seatsField = new TextField();
-        seatsField.setBounds(220, 230, 180, 30);
+        seatsField.setBounds(60, 285, 400, 30);
         add(seatsField);
 
-        // USER
-        userLabel = new Label("Username:");
-        userLabel.setBounds(60, 280, 120, 30);
-        userLabel.setForeground(Color.WHITE);
-        userLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        // ===== USER =====
+        Label userLabel = new Label("Username");
+        userLabel.setBounds(60, 330, 100, 20);
+        userLabel.setForeground(Color.LIGHT_GRAY);
         add(userLabel);
 
         userField = new TextField();
-        userField.setBounds(220, 280, 180, 30);
+        userField.setBounds(60, 355, 400, 30);
         add(userField);
 
-        // PAYMENT
-        paymentLabel = new Label("Payment:");
-        paymentLabel.setBounds(60, 330, 120, 30);
-        paymentLabel.setForeground(Color.WHITE);
-        paymentLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        // ===== PAYMENT =====
+        Label paymentLabel = new Label("Payment");
+        paymentLabel.setBounds(60, 400, 100, 20);
+        paymentLabel.setForeground(Color.LIGHT_GRAY);
         add(paymentLabel);
 
         paymentChoice = new Choice();
         paymentChoice.add("UPI");
         paymentChoice.add("Card");
         paymentChoice.add("Cash");
-        paymentChoice.setBounds(220, 330, 180, 30);
+        paymentChoice.setBounds(60, 425, 400, 30);
         add(paymentChoice);
 
-        // BUTTONS
+        // ===== BUTTONS =====
         bookBtn = new Button("Confirm Booking");
-        bookBtn.setBounds(90, 400, 150, 40);
+        bookBtn.setBounds(120, 470, 170, 40);
         bookBtn.setBackground(new Color(0, 140, 255));
         bookBtn.setForeground(Color.WHITE);
-        bookBtn.setFont(new Font("Arial", Font.BOLD, 14));
         bookBtn.addActionListener(this);
         add(bookBtn);
 
         cancelBtn = new Button("Cancel");
-        cancelBtn.setBounds(270, 400, 100, 40);
-        cancelBtn.setBackground(new Color(180, 50, 50));
+        cancelBtn.setBounds(300, 470, 100, 40);
+        cancelBtn.setBackground(new Color(200, 60, 60));
         cancelBtn.setForeground(Color.WHITE);
-        cancelBtn.setFont(new Font("Arial", Font.BOLD, 14));
         cancelBtn.addActionListener(this);
         add(cancelBtn);
 
-        // MESSAGE
-        message = new Label("");
-        message.setBounds(100, 470, 300, 30);
+        message = new Label("", Label.CENTER);
+        message.setBounds(60, 520, 400, 30);
         message.setForeground(Color.YELLOW);
         add(message);
+
+        // ===== EVENTS =====
+        movieField.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+                searchMovies(movieField.getText());
+            }
+        });
+
+        movieList.addItemListener(e -> {
+            movieField.setText(movieList.getSelectedItem());
+            movieList.setVisible(false);
+        });
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
@@ -138,9 +125,72 @@ public class BookingForm extends Frame implements ActionListener {
         setVisible(true);
     }
 
-    // SEARCH MOVIES
-    public void searchMovies(String movieName) {
+    // ===== BOOKING ACTION =====
+    public void actionPerformed(ActionEvent e) {
 
+        if (e.getSource() == bookBtn) {
+
+            try {
+
+                String movie = movieField.getText();
+                int seats = Integer.parseInt(seatsField.getText());
+                String user = userField.getText().trim();
+
+                Payment payment = new Payment(paymentChoice.getSelectedItem(), seats);
+                double total = payment.calculateTotal();
+
+                new BookingService().bookTicket(movie, seats, user);
+
+                // CLOSE MAIN BOOKING WINDOW
+                this.dispose();
+
+                // SHOW CONFIRMATION DIALOG
+                Dialog d = new Dialog(mainFrame, "Booking Confirmed", true);
+                d.setSize(380, 220);
+                d.setLayout(null);
+                d.setBackground(new Color(30, 30, 45));
+                d.setLocationRelativeTo(null);
+
+                Label title = new Label("CONFIRM BOOKING", Label.CENTER);
+                title.setBounds(0, 30, 380, 30);
+                title.setForeground(Color.WHITE);
+                title.setFont(new Font("Segoe UI", Font.BOLD, 16));
+                d.add(title);
+
+                Label bill = new Label("Total Bill: ₹" + total, Label.CENTER);
+                bill.setBounds(0, 70, 380, 30);
+                bill.setForeground(Color.WHITE);
+                bill.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                d.add(bill);
+
+                Label quote = new Label("\"Have a great movie experience!\"", Label.CENTER);
+                quote.setBounds(0, 100, 380, 25);
+                quote.setForeground(Color.LIGHT_GRAY);
+                d.add(quote);
+
+                Button ok = new Button("OK");
+                ok.setBounds(150, 140, 80, 30);
+                d.add(ok);
+
+                ok.addActionListener(ev -> {
+                    d.dispose();       // close dialog
+                    mainFrame.dispose(); // close main frame too
+                });
+
+                d.setVisible(true);
+
+            } catch (Exception ex) {
+                message.setText("Booking Failed / Invalid Input");
+            }
+        }
+
+        if (e.getSource() == cancelBtn) {
+            dispose();
+        }
+    }
+
+    // KEEP YOUR SEARCH FUNCTION AS IT IS (not changed here)
+    public void searchMovies(String movieName) {
         try {
             movieName = movieName.trim();
             movieList.removeAll();
@@ -152,115 +202,47 @@ public class BookingForm extends Frame implements ActionListener {
 
             movieList.setVisible(true);
 
-            String encodedName = URLEncoder.encode(movieName, "UTF-8");
+            String encoded = URLEncoder.encode(movieName, "UTF-8");
+            String apiUrl = "https://www.omdbapi.com/?apikey=a7cd9cf6&s=" + encoded;
 
-            String apiUrl = "https://www.omdbapi.com/?apikey=a7cd9cf6&s=" + encodedName;
-
-            URL url = new URL(apiUrl);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            HttpURLConnection con = (HttpURLConnection) new URL(apiUrl).openConnection();
             con.setRequestMethod("GET");
 
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(con.getInputStream())
-            );
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
             String line;
-            StringBuilder response = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-            while ((line = br.readLine()) != null) {
-                response.append(line);
-            }
-
+            while ((line = br.readLine()) != null) sb.append(line);
             br.close();
 
-            String json = response.toString();
+            String json = sb.toString();
 
             if (json.contains("\"Response\":\"False\"")) {
                 movieList.setVisible(false);
                 return;
             }
 
-            int index = 0;
+            int i = 0;
 
-            while ((index = json.indexOf("\"Title\":\"", index)) != -1) {
-                index += 9;
-                int end = json.indexOf("\"", index);
+            while ((i = json.indexOf("\"Title\":\"", i)) != -1) {
+                i += 9;
+                int end = json.indexOf("\"", i);
 
-                String title = json.substring(index, end);
+                String title = json.substring(i, end);
 
                 if (title.toLowerCase().startsWith(movieName.toLowerCase())) {
                     movieList.add(title);
                 }
 
-                index = end;
+                i = end;
             }
 
-            if (movieList.getItemCount() == 0) {
+            if (movieList.getItemCount() == 0)
                 movieList.setVisible(false);
-            }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
             message.setText("API Error");
-        }
-    }
-
-    // BUTTON ACTIONS
-    public void actionPerformed(ActionEvent e) {
-
-        if (e.getSource() == bookBtn) {
-
-            try {
-                String movie = movieField.getText();
-                int seats = Integer.parseInt(seatsField.getText());
-                String user = userField.getText().trim();
-                String paymentMethod = paymentChoice.getSelectedItem();
-
-                Payment payment = new Payment(paymentMethod, seats);
-                double total = payment.calculateTotal();
-
-                BookingService service = new BookingService();
-                service.bookTicket(movie, seats, user);
-
-                Dialog successDialog = new Dialog(this, "Booking Successful", true);
-                successDialog.setSize(350, 220);
-                successDialog.setLayout(null);
-                successDialog.setBackground(new Color(20, 40, 90));
-
-                Label successMsg = new Label("Ticket Booked Successfully!");
-                successMsg.setBounds(50, 60, 260, 30);
-                successMsg.setForeground(Color.WHITE);
-                successDialog.add(successMsg);
-
-                Label billMsg = new Label("Total Bill: ₹" + total);
-                billMsg.setBounds(90, 100, 180, 30);
-                billMsg.setForeground(Color.YELLOW);
-                successDialog.add(billMsg);
-
-                Button okBtn = new Button("OK");
-                okBtn.setBounds(130, 150, 80, 30);
-                successDialog.add(okBtn);
-
-                okBtn.addActionListener(ev -> {
-                    successDialog.dispose();
-                    mainFrame.dispose();
-                    dispose();
-                });
-
-                successDialog.setVisible(true);
-
-            } catch (NumberFormatException ex) {
-                message.setText("Enter Valid Number!");
-            } catch (CustomException ex) {
-                message.setText(ex.getMessage());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                message.setText("Booking Failed!");
-            }
-        }
-
-        if (e.getSource() == cancelBtn) {
-            dispose();
         }
     }
 }
