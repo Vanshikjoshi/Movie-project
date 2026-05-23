@@ -7,20 +7,20 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-public class MovieTicketLogin extends JFrame
+public class SignupPage extends JFrame
         implements ActionListener {
 
     JTextField userField;
 
     JPasswordField passField;
 
-    JButton loginButton, signupButton;
+    JButton createButton, backButton;
 
     JLabel message;
 
-    public MovieTicketLogin() {
+    public SignupPage() {
 
-        setTitle("Movie Booking Login");
+        setTitle("Create Account");
 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
@@ -40,7 +40,7 @@ public class MovieTicketLogin extends JFrame
         JPanel card = new JPanel();
 
         card.setPreferredSize(
-                new Dimension(400, 420));
+                new Dimension(400, 430));
 
         card.setBackground(
                 new Color(25, 25, 40));
@@ -58,7 +58,7 @@ public class MovieTicketLogin extends JFrame
                         35));
 
         JLabel title =
-                new JLabel("MOVIE BOOKING");
+                new JLabel("CREATE ACCOUNT");
 
         title.setAlignmentX(
                 Component.CENTER_ALIGNMENT);
@@ -69,10 +69,10 @@ public class MovieTicketLogin extends JFrame
                 new Font(
                         "Segoe UI",
                         Font.BOLD,
-                        28));
+                        26));
 
         JLabel sub =
-                new JLabel("Login to continue");
+                new JLabel("Signup to continue");
 
         sub.setAlignmentX(
                 Component.CENTER_ALIGNMENT);
@@ -141,31 +141,31 @@ public class MovieTicketLogin extends JFrame
                 Box.createRigidArea(
                         new Dimension(0, 30)));
 
-        loginButton =
-                new JButton("Login");
+        createButton =
+                new JButton("Create Account");
 
         styleButton(
-                loginButton,
+                createButton,
                 new Color(0, 140, 255));
 
-        loginButton.addActionListener(this);
+        createButton.addActionListener(this);
 
-        card.add(loginButton);
+        card.add(createButton);
 
         card.add(
                 Box.createRigidArea(
                         new Dimension(0, 15)));
 
-        signupButton =
-                new JButton("Create Account");
+        backButton =
+                new JButton("Back");
 
         styleButton(
-                signupButton,
-                new Color(80, 80, 80));
+                backButton,
+                new Color(90, 90, 90));
 
-        signupButton.addActionListener(this);
+        backButton.addActionListener(this);
 
-        card.add(signupButton);
+        card.add(backButton);
 
         card.add(
                 Box.createRigidArea(
@@ -209,17 +209,17 @@ public class MovieTicketLogin extends JFrame
             ActionEvent e) {
 
         if (e.getSource()
-                == loginButton) {
+                == createButton) {
 
-            String user =
+            String username =
                     userField.getText().trim();
 
-            String pass =
+            String password =
                     String.valueOf(
                             passField.getPassword());
 
-            if (user.equals("")
-                    || pass.equals("")) {
+            if (username.equals("")
+                    || password.equals("")) {
 
                 message.setText(
                         "Fields Cannot Be Empty!");
@@ -233,37 +233,39 @@ public class MovieTicketLogin extends JFrame
                         DBConnection.getConnection();
 
                 String query =
-                        "SELECT * FROM users "
-                                + "WHERE username=? "
-                                + "AND user_password=?";
+                        "INSERT INTO users(username, user_password) "
+                                + "VALUES(?, ?)";
 
                 PreparedStatement pst =
                         con.prepareStatement(query);
 
-                pst.setString(1, user);
+                pst.setString(1, username);
 
-                pst.setString(2, pass);
+                pst.setString(2, password);
 
-                ResultSet rs =
-                        pst.executeQuery();
+                int rows =
+                        pst.executeUpdate();
 
-                if (rs.next()) {
+                if (rows > 0) {
+
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Account Created Successfully!");
 
                     new MainFrame();
 
                     dispose();
-
-                } else {
-
-                    message.setText(
-                            "Invalid Username or Password");
                 }
-
-                rs.close();
 
                 pst.close();
 
                 con.close();
+
+            } catch (
+                    SQLIntegrityConstraintViolationException ex) {
+
+                message.setText(
+                        "Username Already Exists!");
 
             } catch (Exception ex) {
 
@@ -275,16 +277,11 @@ public class MovieTicketLogin extends JFrame
         }
 
         if (e.getSource()
-                == signupButton) {
+                == backButton) {
 
-            new SignupPage();
+            new MovieTicketLogin();
 
             dispose();
         }
-    }
-
-    public static void main(String[] args) {
-
-        new MovieTicketLogin();
     }
 }

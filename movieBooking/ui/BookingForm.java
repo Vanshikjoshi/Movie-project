@@ -1,248 +1,756 @@
 package movieBooking.ui;
 
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
 import java.awt.event.*;
+
 import java.net.*;
 import java.io.*;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 import movieBooking.model.Payment;
 import movieBooking.service.BookingService;
 
-public class BookingForm extends Frame implements ActionListener {
+public class BookingForm extends JFrame
+        implements ActionListener {
 
     MainFrame mainFrame;
 
-    Label heading;
-    TextField movieField, seatsField, userField;
-    List movieList;
-    Choice paymentChoice;
-    Button bookBtn, cancelBtn;
+    JTextField movieField,
+            seatsField,
+            userField;
 
-    Label message;
+    JComboBox<String> paymentChoice;
 
-    public BookingForm(MainFrame mainFrame) {
+    DefaultListModel<String> listModel;
+
+    JList<String> movieList;
+
+    JButton bookBtn,
+            cancelBtn;
+
+    JLabel message;
+
+    JScrollPane scroll;
+
+    JPanel card;
+
+    JLabel posterLabel;
+
+    JLabel imdbLabel;
+
+    JLabel yearLabel;
+
+    JLabel genreLabel;
+
+    public BookingForm(
+            MainFrame mainFrame) {
 
         this.mainFrame = mainFrame;
 
-        setTitle("Movie Ticket Booking");
-        setSize(520, 600);
-        setLayout(null);
-        setBackground(new Color(18, 18, 28));
+        setTitle("Book Movie Ticket");
 
-        // ===== HEADER =====
-        heading = new Label("Movie Ticket Booking", Label.CENTER);
-        heading.setBounds(0, 40, 520, 40);
-        heading.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        setDefaultCloseOperation(
+                WindowConstants.DISPOSE_ON_CLOSE);
+
+        // ===== MAIN PANEL =====
+
+        JPanel mainPanel = new JPanel();
+
+        mainPanel.setBackground(
+                new Color(10, 15, 30));
+
+        mainPanel.setLayout(
+                new GridBagLayout());
+
+        // ===== FULL PAGE SCROLL =====
+
+        JScrollPane mainScroll =
+                new JScrollPane(mainPanel);
+
+        mainScroll.getVerticalScrollBar()
+                .setUnitIncrement(16);
+
+        mainScroll.setBorder(null);
+
+        add(mainScroll);
+
+        // ===== CARD =====
+
+        card = new JPanel();
+
+        card.setPreferredSize(
+                new Dimension(520, 1000));
+
+        card.setBackground(
+                new Color(25, 25, 40));
+
+        card.setLayout(
+                new BoxLayout(
+                        card,
+                        BoxLayout.Y_AXIS));
+
+        card.setBorder(
+                new EmptyBorder(
+                        35,
+                        35,
+                        35,
+                        35));
+
+        // ===== HEADING =====
+
+        JLabel heading =
+                new JLabel(
+                        "MOVIE TICKET BOOKING");
+
+        heading.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
         heading.setForeground(Color.WHITE);
-        add(heading);
 
-        // ===== MOVIE =====
-        Label movieLabel = new Label("Movie");
-        movieLabel.setBounds(60, 110, 100, 20);
-        movieLabel.setForeground(Color.LIGHT_GRAY);
-        add(movieLabel);
+        heading.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        28));
 
-        movieField = new TextField();
-        movieField.setBounds(60, 135, 400, 30);
-        add(movieField);
+        JLabel sub =
+                new JLabel(
+                        "Book your favourite movie");
 
-        movieList = new List();
-        movieList.setBounds(60, 170, 400, 80);
-        movieList.setVisible(false);
-        add(movieList);
+        sub.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+        sub.setForeground(
+                Color.LIGHT_GRAY);
+
+        sub.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        15));
+
+        card.add(heading);
+
+        card.add(
+                Box.createRigidArea(
+                        new Dimension(0, 10)));
+
+        card.add(sub);
+
+        card.add(
+                Box.createRigidArea(
+                        new Dimension(0, 35)));
+
+        // ===== MOVIE FIELD =====
+
+        movieField = new JTextField();
+
+        styleField(
+                movieField,
+                "Movie Name");
+
+        card.add(movieField);
+
+        card.add(
+                Box.createRigidArea(
+                        new Dimension(0, 10)));
+
+        // ===== MOVIE LIST =====
+
+        listModel =
+                new DefaultListModel<>();
+
+        movieList =
+                new JList<>(listModel);
+
+        movieList.setVisibleRowCount(5);
+
+        movieList.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        15));
+
+        scroll =
+                new JScrollPane(movieList);
+
+        scroll.setMaximumSize(
+                new Dimension(420, 100));
+
+        scroll.setVisible(false);
+
+        card.add(scroll);
+
+        card.add(
+                Box.createRigidArea(
+                        new Dimension(0, 20)));
+
+        // ===== POSTER =====
+
+        posterLabel = new JLabel();
+
+        posterLabel.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+        card.add(posterLabel);
+
+        card.add(
+                Box.createRigidArea(
+                        new Dimension(0, 20)));
+
+        // ===== DETAILS =====
+
+        imdbLabel =
+                new JLabel("");
+
+        imdbLabel.setForeground(Color.WHITE);
+
+        imdbLabel.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+        imdbLabel.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        15));
+
+        card.add(imdbLabel);
+
+        yearLabel =
+                new JLabel("");
+
+        yearLabel.setForeground(Color.WHITE);
+
+        yearLabel.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+        yearLabel.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        15));
+
+        card.add(yearLabel);
+
+        genreLabel =
+                new JLabel("");
+
+        genreLabel.setForeground(Color.WHITE);
+
+        genreLabel.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+        genreLabel.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        15));
+
+        card.add(genreLabel);
+
+        card.add(
+                Box.createRigidArea(
+                        new Dimension(0, 25)));
 
         // ===== SEATS =====
-        Label seatsLabel = new Label("Seats");
-        seatsLabel.setBounds(60, 260, 100, 20);
-        seatsLabel.setForeground(Color.LIGHT_GRAY);
-        add(seatsLabel);
 
-        seatsField = new TextField();
-        seatsField.setBounds(60, 285, 400, 30);
-        add(seatsField);
+        seatsField =
+                new JTextField();
+
+        styleField(
+                seatsField,
+                "Number Of Seats");
+
+        card.add(seatsField);
+
+        card.add(
+                Box.createRigidArea(
+                        new Dimension(0, 20)));
 
         // ===== USER =====
-        Label userLabel = new Label("Username");
-        userLabel.setBounds(60, 330, 100, 20);
-        userLabel.setForeground(Color.LIGHT_GRAY);
-        add(userLabel);
 
-        userField = new TextField();
-        userField.setBounds(60, 355, 400, 30);
-        add(userField);
+        userField =
+                new JTextField();
+
+        styleField(
+                userField,
+                "Username");
+
+        card.add(userField);
+
+        card.add(
+                Box.createRigidArea(
+                        new Dimension(0, 20)));
 
         // ===== PAYMENT =====
-        Label paymentLabel = new Label("Payment");
-        paymentLabel.setBounds(60, 400, 100, 20);
-        paymentLabel.setForeground(Color.LIGHT_GRAY);
-        add(paymentLabel);
 
-        paymentChoice = new Choice();
-        paymentChoice.add("UPI");
-        paymentChoice.add("Card");
-        paymentChoice.add("Cash");
-        paymentChoice.setBounds(60, 425, 400, 30);
-        add(paymentChoice);
+        paymentChoice =
+                new JComboBox<>();
 
-        // ===== BUTTONS =====
-        bookBtn = new Button("Confirm Booking");
-        bookBtn.setBounds(120, 470, 170, 40);
-        bookBtn.setBackground(new Color(0, 140, 255));
-        bookBtn.setForeground(Color.WHITE);
+        paymentChoice.addItem("UPI");
+
+        paymentChoice.addItem("Card");
+
+        paymentChoice.addItem("Cash");
+
+        paymentChoice.setMaximumSize(
+                new Dimension(420, 45));
+
+        paymentChoice.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        15));
+
+        card.add(paymentChoice);
+
+        card.add(
+                Box.createRigidArea(
+                        new Dimension(0, 35)));
+
+        // ===== BOOK BUTTON =====
+
+        bookBtn =
+                new JButton(
+                        "Confirm Booking");
+
+        styleButton(
+                bookBtn,
+                new Color(0, 140, 255));
+
         bookBtn.addActionListener(this);
-        add(bookBtn);
 
-        cancelBtn = new Button("Cancel");
-        cancelBtn.setBounds(300, 470, 100, 40);
-        cancelBtn.setBackground(new Color(200, 60, 60));
-        cancelBtn.setForeground(Color.WHITE);
+        card.add(bookBtn);
+
+        card.add(
+                Box.createRigidArea(
+                        new Dimension(0, 15)));
+
+        // ===== CANCEL BUTTON =====
+
+        cancelBtn =
+                new JButton("Cancel");
+
+        styleButton(
+                cancelBtn,
+                new Color(220, 70, 70));
+
         cancelBtn.addActionListener(this);
-        add(cancelBtn);
 
-        message = new Label("", Label.CENTER);
-        message.setBounds(60, 520, 400, 30);
+        card.add(cancelBtn);
+
+        card.add(
+                Box.createRigidArea(
+                        new Dimension(0, 15)));
+
+        // ===== MESSAGE =====
+
+        message =
+                new JLabel("");
+
         message.setForeground(Color.YELLOW);
-        add(message);
 
-        // ===== EVENTS =====
-        movieField.addKeyListener(new KeyAdapter() {
-            public void keyReleased(KeyEvent e) {
-                searchMovies(movieField.getText());
+        message.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+        card.add(message);
+
+        mainPanel.add(card);
+
+        // ===== SEARCH EVENT =====
+
+        movieField.addKeyListener(
+                new KeyAdapter() {
+
+            public void keyReleased(
+                    KeyEvent e) {
+
+                String text =
+                        movieField
+                                .getText()
+                                .trim();
+
+                if (text.length() < 3) {
+
+                    scroll.setVisible(false);
+
+                    return;
+                }
+
+                searchMovies(text);
+
+                if (listModel.size() > 0) {
+
+                    scroll.setVisible(true);
+
+                } else {
+
+                    scroll.setVisible(false);
+                }
+
+                card.revalidate();
+
+                card.repaint();
             }
         });
 
-        movieList.addItemListener(e -> {
-            movieField.setText(movieList.getSelectedItem());
-            movieList.setVisible(false);
-        });
+        // ===== SELECT MOVIE =====
 
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-                dispose();
+        movieList.addListSelectionListener(e -> {
+
+            if (!e.getValueIsAdjusting()) {
+
+                String selected =
+                        movieList.getSelectedValue();
+
+                if (selected != null) {
+
+                    movieField.setText(selected);
+
+                    loadMovieDetails(selected);
+
+                    scroll.setVisible(false);
+
+                    card.revalidate();
+
+                    card.repaint();
+                }
             }
         });
 
         setVisible(true);
     }
 
-    // ===== BOOKING ACTION =====
-    public void actionPerformed(ActionEvent e) {
+    // ===== FIELD STYLE =====
 
-        if (e.getSource() == bookBtn) {
+    private void styleField(
+            JTextField field,
+            String title) {
+
+        field.setMaximumSize(
+                new Dimension(420, 45));
+
+        field.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        15));
+
+        field.setBorder(
+                BorderFactory
+                        .createTitledBorder(
+                                title));
+    }
+
+    // ===== BUTTON STYLE =====
+
+    private void styleButton(
+            JButton btn,
+            Color color) {
+
+        btn.setBackground(color);
+
+        btn.setForeground(Color.WHITE);
+
+        btn.setFocusPainted(false);
+
+        btn.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        16));
+
+        btn.setMaximumSize(
+                new Dimension(420, 45));
+    }
+
+    // ===== BUTTON ACTIONS =====
+
+    public void actionPerformed(
+            ActionEvent e) {
+
+        if (e.getSource()
+                == bookBtn) {
 
             try {
 
-                String movie = movieField.getText();
-                int seats = Integer.parseInt(seatsField.getText());
-                String user = userField.getText().trim();
+                String movie =
+                        movieField.getText();
 
-                Payment payment = new Payment(paymentChoice.getSelectedItem(), seats);
-                double total = payment.calculateTotal();
+                int seats =
+                        Integer.parseInt(
+                                seatsField.getText());
 
-                new BookingService().bookTicket(movie, seats, user);
+                String user =
+                        userField.getText();
 
-                // CLOSE MAIN BOOKING WINDOW
-                this.dispose();
+                Payment payment =
+                        new Payment(
+                                paymentChoice
+                                        .getSelectedItem()
+                                        .toString(),
+                                seats);
 
-                // SHOW CONFIRMATION DIALOG
-                Dialog d = new Dialog(mainFrame, "Booking Confirmed", true);
-                d.setSize(380, 220);
-                d.setLayout(null);
-                d.setBackground(new Color(30, 30, 45));
-                d.setLocationRelativeTo(null);
+                double total =
+                        payment.calculateTotal();
 
-                Label title = new Label("CONFIRM BOOKING", Label.CENTER);
-                title.setBounds(0, 30, 380, 30);
-                title.setForeground(Color.WHITE);
-                title.setFont(new Font("Segoe UI", Font.BOLD, 16));
-                d.add(title);
+                new BookingService()
+                        .bookTicket(
+                                movie,
+                                seats,
+                                user);
 
-                Label bill = new Label("Total Bill: ₹" + total, Label.CENTER);
-                bill.setBounds(0, 70, 380, 30);
-                bill.setForeground(Color.WHITE);
-                bill.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-                d.add(bill);
+                int option =
+                        JOptionPane.showOptionDialog(
+                                this,
+                                "Booking Successful!\n\n"
+                                        + "Movie : "
+                                        + movie
+                                        + "\nSeats : "
+                                        + seats
+                                        + "\nTotal Bill : ₹"
+                                        + total,
+                                "Booking Confirmed",
+                                JOptionPane.DEFAULT_OPTION,
+                                JOptionPane.INFORMATION_MESSAGE,
+                                null,
+                                new String[]{"OK"},
+                                "OK");
 
-                Label quote = new Label("\"Have a great movie experience!\"", Label.CENTER);
-                quote.setBounds(0, 100, 380, 25);
-                quote.setForeground(Color.LIGHT_GRAY);
-                d.add(quote);
+                if (option == 0) {
 
-                Button ok = new Button("OK");
-                ok.setBounds(150, 140, 80, 30);
-                d.add(ok);
+                    dispose();
 
-                ok.addActionListener(ev -> {
-                    d.dispose();       // close dialog
-                    mainFrame.dispose(); // close main frame too
-                });
+                    mainFrame.dispose();
 
-                d.setVisible(true);
+                    System.exit(0);
+                }
 
             } catch (Exception ex) {
-                message.setText("Booking Failed / Invalid Input");
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Booking Failed / Invalid Input");
             }
         }
 
-        if (e.getSource() == cancelBtn) {
+        if (e.getSource()
+                == cancelBtn) {
+
             dispose();
         }
     }
 
-    // KEEP YOUR SEARCH FUNCTION AS IT IS (not changed here)
-    public void searchMovies(String movieName) {
+    // ===== SEARCH MOVIES =====
+
+    public void searchMovies(
+            String movieName) {
+
         try {
-            movieName = movieName.trim();
-            movieList.removeAll();
 
-            if (movieName.length() < 3) {
-                movieList.setVisible(false);
-                return;
-            }
+            movieName =
+                    movieName.trim();
 
-            movieList.setVisible(true);
+            listModel.clear();
 
-            String encoded = URLEncoder.encode(movieName, "UTF-8");
-            String apiUrl = "https://www.omdbapi.com/?apikey=a7cd9cf6&s=" + encoded;
+            String encoded =
+                    URLEncoder.encode(
+                            movieName,
+                            "UTF-8");
 
-            HttpURLConnection con = (HttpURLConnection) new URL(apiUrl).openConnection();
+            String apiUrl =
+                    "https://www.omdbapi.com/?apikey=a7cd9cf6&s="
+                            + encoded;
+
+            HttpURLConnection con =
+                    (HttpURLConnection)
+                            new URL(apiUrl)
+                                    .openConnection();
+
             con.setRequestMethod("GET");
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            BufferedReader br =
+                    new BufferedReader(
+                            new InputStreamReader(
+                                    con.getInputStream()));
 
             String line;
-            StringBuilder sb = new StringBuilder();
 
-            while ((line = br.readLine()) != null) sb.append(line);
+            StringBuilder sb =
+                    new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+
+                sb.append(line);
+            }
+
             br.close();
 
-            String json = sb.toString();
-
-            if (json.contains("\"Response\":\"False\"")) {
-                movieList.setVisible(false);
-                return;
-            }
+            String json =
+                    sb.toString();
 
             int i = 0;
 
-            while ((i = json.indexOf("\"Title\":\"", i)) != -1) {
+            while ((i = json.indexOf(
+                    "\"Title\":\"",
+                    i)) != -1) {
+
                 i += 9;
-                int end = json.indexOf("\"", i);
 
-                String title = json.substring(i, end);
+                int end =
+                        json.indexOf(
+                                "\"",
+                                i);
 
-                if (title.toLowerCase().startsWith(movieName.toLowerCase())) {
-                    movieList.add(title);
-                }
+                String title =
+                        json.substring(
+                                i,
+                                end);
+
+                listModel.addElement(title);
 
                 i = end;
             }
 
-            if (movieList.getItemCount() == 0)
-                movieList.setVisible(false);
+        } catch (Exception ex) {
+
+            message.setText(
+                    "Movie API Error");
+        }
+    }
+
+    // ===== LOAD MOVIE DETAILS =====
+
+    public void loadMovieDetails(
+            String movieName) {
+
+        try {
+
+            String encoded =
+                    URLEncoder.encode(
+                            movieName,
+                            "UTF-8");
+
+            String apiUrl =
+                    "https://www.omdbapi.com/?apikey=a7cd9cf6&t="
+                            + encoded;
+
+            HttpURLConnection con =
+                    (HttpURLConnection)
+                            new URL(apiUrl)
+                                    .openConnection();
+
+            con.setRequestMethod("GET");
+
+            BufferedReader br =
+                    new BufferedReader(
+                            new InputStreamReader(
+                                    con.getInputStream()));
+
+            String line;
+
+            StringBuilder sb =
+                    new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+
+                sb.append(line);
+            }
+
+            br.close();
+
+            String json =
+                    sb.toString();
+
+            String year =
+                    extractValue(
+                            json,
+                            "Year");
+
+            String genre =
+                    extractValue(
+                            json,
+                            "Genre");
+
+            String imdb =
+                    extractValue(
+                            json,
+                            "imdbRating");
+
+            String poster =
+                    extractValue(
+                            json,
+                            "Poster");
+
+            imdbLabel.setText(
+                    "IMDb Rating : " + imdb);
+
+            yearLabel.setText(
+                    "Year : " + year);
+
+            genreLabel.setText(
+                    "Genre : " + genre);
+
+            if (!poster.equals("N/A")) {
+
+                BufferedImage image =
+                        ImageIO.read(
+                                new URL(poster));
+
+                Image scaled =
+                        image.getScaledInstance(
+                                220,
+                                300,
+                                Image.SCALE_SMOOTH);
+
+                posterLabel.setIcon(
+                        new ImageIcon(scaled));
+            }
 
         } catch (Exception ex) {
-            message.setText("API Error");
+
+            ex.printStackTrace();
+        }
+    }
+
+    // ===== JSON VALUE EXTRACT =====
+
+    public String extractValue(
+            String json,
+            String key) {
+
+        try {
+
+            int start =
+                    json.indexOf(
+                            "\"" + key + "\":\"");
+
+            if (start == -1) {
+
+                return "N/A";
+            }
+
+            start += key.length() + 4;
+
+            int end =
+                    json.indexOf(
+                            "\"",
+                            start);
+
+            return json.substring(
+                    start,
+                    end);
+
+        } catch (Exception e) {
+
+            return "N/A";
         }
     }
 }

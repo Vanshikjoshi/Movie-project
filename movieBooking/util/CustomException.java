@@ -1,7 +1,11 @@
 package movieBooking.util;
 
-public class CustomException extends Exception {
-    public CustomException(String message) {
+public class CustomException
+        extends Exception {
+
+    public CustomException(
+            String message) {
+
         super(message);
     }
 }

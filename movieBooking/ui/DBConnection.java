@@ -2,32 +2,51 @@ package movieBooking.ui;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+
 import java.util.Properties;
+
 import java.io.FileInputStream;
 
 public class DBConnection {
 
-    static Connection con;
-
     public static Connection getConnection() {
+
+        Connection con = null;
 
         try {
 
-            Properties props = new Properties();
+            Properties props =
+                    new Properties();
 
-            FileInputStream fis = new FileInputStream("db.properties");
+            FileInputStream fis =
+                    new FileInputStream(
+                            "db.properties");
 
             props.load(fis);
 
-            String url = props.getProperty("db.url");
-            String username = props.getProperty("db.username");
-            String password = props.getProperty("db.password");
+            String url =
+                    props.getProperty(
+                            "db.url");
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            String username =
+                    props.getProperty(
+                            "db.username");
 
-            con = DriverManager.getConnection(url, username, password);
+            String password =
+                    props.getProperty(
+                            "db.password");
 
-            System.out.println("Connected Successfully");
+            Class.forName(
+                    "com.mysql.cj.jdbc.Driver");
+
+            con =
+                    DriverManager.getConnection(
+                            url,
+                            username,
+                            password);
+
+            System.out.println(
+                    "Database Connected");
 
         } catch (Exception e) {
 

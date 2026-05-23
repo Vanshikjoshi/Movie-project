@@ -9,42 +9,85 @@ import movieBooking.util.CustomException;
 
 public class BookingService {
 
-    public void bookTicket(String movie, int seats, String user)
+    public void bookTicket(
+            String movie,
+            int seats,
+            String user)
             throws CustomException {
 
-        if (movie.equals("") || user.equals("")) {
-            throw new CustomException("Fields Cannot Be Empty!");
+        if (movie.trim().equals("")
+                || user.trim().equals("")) {
+
+            throw new CustomException(
+                    "Fields Cannot Be Empty!");
         }
 
         if (seats <= 0) {
-            throw new CustomException("Invalid Seats!");
+
+            throw new CustomException(
+                    "Invalid Number Of Seats!");
         }
+
+        Connection con = null;
+
+        PreparedStatement pst = null;
 
         try {
 
-            Connection con = DBConnection.getConnection();
+            con =
+                    DBConnection.getConnection();
 
             if (con == null) {
-                throw new CustomException("Database Connection Failed!");
+
+                throw new CustomException(
+                        "Database Connection Failed!");
             }
 
-            Booking booking = new Booking(movie, seats, user);
+            Booking booking =
+                    new Booking(
+                            movie,
+                            seats,
+                            user);
 
-            String query = "INSERT INTO bookings(movie_name, seats, user_name) VALUES(?,?,?)";
+            String query =
+                    "INSERT INTO bookings(movie_name, seats, user_name) "
+                            + "VALUES(?,?,?)";
 
-            PreparedStatement pst = con.prepareStatement(query);
+            pst =
+                    con.prepareStatement(query);
 
-            pst.setString(1, booking.getMovieName());
-            pst.setInt(2, booking.getSeats());
-            pst.setString(3, booking.getUserName());
+            pst.setString(
+                    1,
+                    booking.getMovieName());
+
+            pst.setInt(
+                    2,
+                    booking.getSeats());
+
+            pst.setString(
+                    3,
+                    booking.getUserName());
 
             pst.executeUpdate();
 
-            pst.close();
-            con.close();
-
         } catch (Exception e) {
+
             e.printStackTrace();
+
+        } finally {
+
+            try {
+
+                if (pst != null)
+                    pst.close();
+
+                if (con != null)
+                    con.close();
+
+            } catch (Exception ex) {
+
+                ex.printStackTrace();
+            }
         }
     }
 }

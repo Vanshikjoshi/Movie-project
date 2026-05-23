@@ -1,107 +1,165 @@
 package movieBooking.ui;
 
+import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
-public class MainFrame extends Frame implements ActionListener {
+public class MainFrame extends JFrame
+        implements ActionListener {
 
-    Label heading, subHeading;
-
-    Button bookButton, exitButton;
+    JButton bookButton, exitButton;
 
     public MainFrame() {
 
-        setTitle("Movie Booking System");
+        setTitle("Movie Booking Dashboard");
 
-        setSize(500, 400);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        setBackground(new Color(15, 25, 55));
+        JPanel main = new JPanel();
 
-        // HEADING
+        main.setBackground(new Color(10, 15, 30));
 
-        heading = new Label("MOVIE BOOKING SYSTEM");
+        main.setLayout(new BorderLayout());
 
-        heading.setBounds(80, 70, 350, 40);
+        add(main);
+
+        JLabel heading =
+                new JLabel(
+                        "MOVIE BOOKING SYSTEM",
+                        JLabel.CENTER);
 
         heading.setForeground(Color.WHITE);
 
-        heading.setFont(new Font("Arial", Font.BOLD, 28));
+        heading.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        36));
 
-        add(heading);
+        heading.setBorder(
+                BorderFactory.createEmptyBorder(
+                        50,
+                        0,
+                        20,
+                        0));
 
-        // SUB HEADING
+        main.add(heading, BorderLayout.NORTH);
 
-        subHeading = new Label("Book Your Favourite Movie Tickets");
+        JPanel centerPanel = new JPanel();
 
-        subHeading.setBounds(110, 120, 280, 30);
+        centerPanel.setBackground(
+                new Color(10, 15, 30));
 
-        subHeading.setForeground(Color.LIGHT_GRAY);
+        centerPanel.setLayout(
+                new BoxLayout(
+                        centerPanel,
+                        BoxLayout.Y_AXIS));
 
-        subHeading.setFont(new Font("Arial", Font.PLAIN, 16));
+        JLabel sub =
+                new JLabel(
+                        "Book Your Favourite Movies");
 
-        add(subHeading);
+        sub.setForeground(Color.LIGHT_GRAY);
 
-        // BOOK BUTTON
+        sub.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        20));
 
-        bookButton = new Button("Book Ticket");
+        sub.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
 
-        bookButton.setBounds(160, 190, 180, 50);
+        centerPanel.add(sub);
 
-        bookButton.setBackground(new Color(0, 140, 255));
+        centerPanel.add(
+                Box.createRigidArea(
+                        new Dimension(0, 50)));
 
-        bookButton.setForeground(Color.WHITE);
+        bookButton =
+                new JButton("Book Ticket");
 
-        bookButton.setFont(new Font("Arial", Font.BOLD, 16));
+        styleButton(
+                bookButton,
+                new Color(0, 140, 255));
+
+        centerPanel.add(bookButton);
+
+        centerPanel.add(
+                Box.createRigidArea(
+                        new Dimension(0, 20)));
+
+        exitButton =
+                new JButton("Exit");
+
+        styleButton(
+                exitButton,
+                new Color(220, 70, 70));
+
+        centerPanel.add(exitButton);
+
+        main.add(centerPanel,
+                BorderLayout.CENTER);
 
         bookButton.addActionListener(this);
 
-        add(bookButton);
-
-        // EXIT BUTTON
-
-        exitButton = new Button("Exit");
-
-        exitButton.setBounds(190, 270, 120, 40);
-
-        exitButton.setBackground(new Color(180, 50, 50));
-
-        exitButton.setForeground(Color.WHITE);
-
-        exitButton.setFont(new Font("Arial", Font.BOLD, 14));
-
         exitButton.addActionListener(this);
-
-        add(exitButton);
-
-        // WINDOW CLOSE
-
-        addWindowListener(new WindowAdapter() {
-
-            public void windowClosing(WindowEvent we) {
-
-                dispose();
-            }
-        });
 
         setVisible(true);
     }
 
-    public void actionPerformed(ActionEvent e) {
+    private void styleButton(
+            JButton btn,
+            Color color) {
 
-        // OPEN BOOKING FORM
+        btn.setBackground(color);
 
-        if (e.getSource() == bookButton) {
+        btn.setForeground(Color.WHITE);
 
-            new BookingForm(this);
+        btn.setFocusPainted(false);
+
+        btn.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        18));
+
+        btn.setMaximumSize(
+                new Dimension(250, 50));
+
+        btn.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+    }
+
+    public void actionPerformed(
+            ActionEvent e) {
+
+        if (e.getSource()
+                == bookButton) {
+
+            bookButton.setEnabled(false);
+
+            BookingForm form =
+                    new BookingForm(this);
+
+            form.addWindowListener(
+                    new WindowAdapter() {
+
+                public void windowClosed(
+                        WindowEvent e) {
+
+                    bookButton.setEnabled(true);
+                }
+            });
         }
 
-        // EXIT
+        if (e.getSource()
+                == exitButton) {
 
-        if (e.getSource() == exitButton) {
-
-            dispose();
+            System.exit(0);
         }
     }
 }
