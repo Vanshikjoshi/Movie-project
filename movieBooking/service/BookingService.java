@@ -1,93 +1,45 @@
 package movieBooking.service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import movieBooking.model.Booking;
-import movieBooking.ui.DBConnection;
-import movieBooking.util.CustomException;
+import java.sql.*;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 public class BookingService {
 
-    public void bookTicket(
-            String movie,
-            int seats,
-            String user)
-            throws CustomException {
+    private Connection getConnection() throws Exception {
 
-        if (movie.trim().equals("")
-                || user.trim().equals("")) {
+        Properties props = new Properties();
 
-            throw new CustomException(
-                    "Fields Cannot Be Empty!");
-        }
+        FileInputStream fis = new FileInputStream("db.properties");
+        props.load(fis);
 
-        if (seats <= 0) {
+        String url = props.getProperty("db.url");
+        String user = props.getProperty("db.username");
+        String pass = props.getProperty("db.password");
 
-            throw new CustomException(
-                    "Invalid Number Of Seats!");
-        }
+        return DriverManager.getConnection(url, user, pass);
+    }
 
-        Connection con = null;
+    public void bookTicket(String movie, String user, String seatType,
+                           int seatNumber, String payment) {
 
-        PreparedStatement pst = null;
+        String sql = "INSERT INTO bookings " +
+                "(movie_name, user_name, seat_type, seat_number, payment_method) " +
+                "VALUES (?, ?, ?, ?, ?)";
 
-        try {
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            con =
-                    DBConnection.getConnection();
+            ps.setString(1, movie);
+            ps.setString(2, user);
+            ps.setString(3, seatType);
+            ps.setInt(4, seatNumber);
+            ps.setString(5, payment);
 
-            if (con == null) {
-
-                throw new CustomException(
-                        "Database Connection Failed!");
-            }
-
-            Booking booking =
-                    new Booking(
-                            movie,
-                            seats,
-                            user);
-
-            String query =
-                    "INSERT INTO bookings(movie_name, seats, user_name) "
-                            + "VALUES(?,?,?)";
-
-            pst =
-                    con.prepareStatement(query);
-
-            pst.setString(
-                    1,
-                    booking.getMovieName());
-
-            pst.setInt(
-                    2,
-                    booking.getSeats());
-
-            pst.setString(
-                    3,
-                    booking.getUserName());
-
-            pst.executeUpdate();
+            ps.executeUpdate();
 
         } catch (Exception e) {
-
             e.printStackTrace();
-
-        } finally {
-
-            try {
-
-                if (pst != null)
-                    pst.close();
-
-                if (con != null)
-                    con.close();
-
-            } catch (Exception ex) {
-
-                ex.printStackTrace();
-            }
         }
     }
 }
