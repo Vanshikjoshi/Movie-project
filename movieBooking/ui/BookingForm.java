@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
+import java.awt.event.MouseEvent;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
@@ -105,7 +105,7 @@ public class BookingForm extends JFrame implements ActionListener {
 
         card.add(Box.createVerticalStrut(10));
 
-        seatTypeChoice = new JComboBox<>(new String[]{
+        seatTypeChoice = new JComboBox<>(new String[] {
                 "Select Seat Type",
                 "Front Seat",
                 "Middle Seat",
@@ -122,7 +122,7 @@ public class BookingForm extends JFrame implements ActionListener {
 
         card.add(Box.createVerticalStrut(10));
 
-        paymentChoice = new JComboBox<>(new String[]{
+        paymentChoice = new JComboBox<>(new String[] {
                 "Select Payment Method",
                 "UPI",
                 "Card",
@@ -145,14 +145,22 @@ public class BookingForm extends JFrame implements ActionListener {
         card.add(Box.createVerticalStrut(10));
         card.add(cancelBtn);
 
-        // SEARCH
         movieField.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { trigger(); }
-            public void removeUpdate(DocumentEvent e) { trigger(); }
-            public void changedUpdate(DocumentEvent e) { trigger(); }
+            public void insertUpdate(DocumentEvent e) {
+                trigger();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                trigger();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                trigger();
+            }
 
             private void trigger() {
-                if (searchTimer != null) searchTimer.stop();
+                if (searchTimer != null)
+                    searchTimer.stop();
 
                 searchTimer = new Timer(350, e -> searchMovies());
                 searchTimer.setRepeats(false);
@@ -160,12 +168,12 @@ public class BookingForm extends JFrame implements ActionListener {
             }
         });
 
-        // SELECTION (FIXED RELIABILITY)
         movieList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
 
-                if (selecting) return;
+                if (selecting)
+                    return;
 
                 String selected = movieList.getSelectedValue();
 
@@ -175,7 +183,6 @@ public class BookingForm extends JFrame implements ActionListener {
 
                     movieField.setText(selected);
 
-                    // 🔥 CRITICAL FIX: defer UI removal AFTER selection completes
                     SwingUtilities.invokeLater(() -> {
                         hideList();
                         loadMovieDetails(selected);
@@ -188,7 +195,6 @@ public class BookingForm extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    // ================= SEARCH =================
     private void searchMovies() {
 
         String text = movieField.getText().trim();
@@ -211,7 +217,8 @@ public class BookingForm extends JFrame implements ActionListener {
                 StringBuilder sb = new StringBuilder();
                 String line;
 
-                while ((line = br.readLine()) != null) sb.append(line);
+                while ((line = br.readLine()) != null)
+                    sb.append(line);
 
                 String json = sb.toString();
 
@@ -222,7 +229,8 @@ public class BookingForm extends JFrame implements ActionListener {
                 while (i != -1) {
                     i += 9;
                     int end = json.indexOf("\"", i);
-                    if (end == -1) break;
+                    if (end == -1)
+                        break;
 
                     temp.addElement(json.substring(i, end));
                     i = json.indexOf("\"Title\":\"", end);
@@ -247,7 +255,6 @@ public class BookingForm extends JFrame implements ActionListener {
         }).start();
     }
 
-    // ================= DETAILS =================
     private void loadMovieDetails(String movie) {
 
         try {
@@ -264,7 +271,8 @@ public class BookingForm extends JFrame implements ActionListener {
             StringBuilder sb = new StringBuilder();
             String line;
 
-            while ((line = br.readLine()) != null) sb.append(line);
+            while ((line = br.readLine()) != null)
+                sb.append(line);
 
             String json = sb.toString();
 
@@ -279,8 +287,7 @@ public class BookingForm extends JFrame implements ActionListener {
             if (poster != null && poster.startsWith("http")) {
                 BufferedImage img = ImageIO.read(new URL(poster));
                 posterLabel.setIcon(new ImageIcon(
-                        img.getScaledInstance(200, 280, Image.SCALE_SMOOTH)
-                ));
+                        img.getScaledInstance(200, 280, Image.SCALE_SMOOTH)));
             }
 
         } catch (Exception e) {
@@ -288,7 +295,6 @@ public class BookingForm extends JFrame implements ActionListener {
         }
     }
 
-    // ================= FIXED LIST HANDLING =================
     private void hideList() {
         scroll.setVisible(false);
         card.remove(scroll);
@@ -304,7 +310,6 @@ public class BookingForm extends JFrame implements ActionListener {
         genreLabel.setText("");
     }
 
-    // ================= BOOK =================
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == bookBtn) {
@@ -328,8 +333,7 @@ public class BookingForm extends JFrame implements ActionListener {
                 totalBill = calculatePrice(seatType);
 
                 new BookingService().bookTicket(
-                        movie, user, seatType, seatNumber, payment
-                );
+                        movie, user, seatType, seatNumber, payment);
 
                 JOptionPane.showMessageDialog(this,
                         "BOOKING CONFIRMED\n\n" +
@@ -337,10 +341,10 @@ public class BookingForm extends JFrame implements ActionListener {
                                 "Seat Type: " + seatType + "\n" +
                                 "Seat No: " + seatNumber + "\n" +
                                 "Payment: " + payment + "\n" +
-                                "Total: ₹" + totalBill
-                );
+                                "Total: ₹" + totalBill);
 
-                for (Window w : Window.getWindows()) w.dispose();
+                for (Window w : Window.getWindows())
+                    w.dispose();
                 System.exit(0);
 
             } catch (Exception ex) {
@@ -348,13 +352,14 @@ public class BookingForm extends JFrame implements ActionListener {
             }
         }
 
-        if (e.getSource() == cancelBtn) dispose();
+        if (e.getSource() == cancelBtn)
+            dispose();
     }
 
-    // helpers unchanged
     private String extract(String json, String key) {
         int i = json.indexOf("\"" + key + "\":\"");
-        if (i == -1) return "N/A";
+        if (i == -1)
+            return "N/A";
         i += key.length() + 4;
         int j = json.indexOf("\"", i);
         return json.substring(i, j);
@@ -385,14 +390,18 @@ public class BookingForm extends JFrame implements ActionListener {
 
     private int generateSeat(String type) {
         Random r = new Random();
-        if (type.equals("Front Seat")) return r.nextInt(30) + 1;
-        if (type.equals("Middle Seat")) return r.nextInt(40) + 31;
+        if (type.equals("Front Seat"))
+            return r.nextInt(30) + 1;
+        if (type.equals("Middle Seat"))
+            return r.nextInt(40) + 31;
         return r.nextInt(30) + 71;
     }
 
     private double calculatePrice(String type) {
-        if (type.equals("Front Seat")) return 300;
-        if (type.equals("Middle Seat")) return 250;
+        if (type.equals("Front Seat"))
+            return 300;
+        if (type.equals("Middle Seat"))
+            return 250;
         return 200;
     }
 }
